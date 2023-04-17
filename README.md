@@ -36,10 +36,10 @@ Step 1: code preparation
 Step 2: build and compile executable files  
 
 ```bash
-cd modelprovider/afstream-0.2.0/apps/paillierwork
+cd modelprovider/afstream-0.2.0/apps/paillierworker
 make
 
-cd dataprovider/afstream-0.2.0/apps/paillierwork
+cd dataprovider/afstream-0.2.0/apps/paillierworker
 make
 
 cd SP
