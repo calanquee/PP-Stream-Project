@@ -28,6 +28,9 @@ Step 1: code preparation
 * configuration files
 	* ```modelprovider/afstream-0.2.0/conf/paillier_worker/paillier_worker.ini```
 	* ```dataprovider/afstream-0.2.0/conf/paillier_worker/paillier_worker.ini```
+* key files
+	* ```publicdata/paillier_pub_key.txt```
+	* ```publicdata/paillier_priv_key.txt```
 
 
 Step 2: build and compile executable files  
