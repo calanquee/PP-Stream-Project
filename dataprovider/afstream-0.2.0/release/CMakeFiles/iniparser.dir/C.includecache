@@ -1,0 +1,46 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/liuqingxiu/afstream-0.2.0/third_party/iniparser/src/dictionary.c
+dictionary.h
+/home/liuqingxiu/afstream-0.2.0/third_party/iniparser/src/dictionary.h
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+unistd.h
+-
+
+/home/liuqingxiu/afstream-0.2.0/third_party/iniparser/src/dictionary.h
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+unistd.h
+-
+
+/home/liuqingxiu/afstream-0.2.0/third_party/iniparser/src/iniparser.c
+ctype.h
+-
+iniparser.h
+/home/liuqingxiu/afstream-0.2.0/third_party/iniparser/src/iniparser.h
+
+/home/liuqingxiu/afstream-0.2.0/third_party/iniparser/src/iniparser.h
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+dictionary.h
+/home/liuqingxiu/afstream-0.2.0/third_party/iniparser/src/dictionary.h
+

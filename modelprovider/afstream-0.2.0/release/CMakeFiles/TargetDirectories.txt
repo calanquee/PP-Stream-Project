@@ -1,0 +1,9 @@
+/home/liuqingxiu/afstream-0.2.0/release/CMakeFiles/edit_cache.dir
+/home/liuqingxiu/afstream-0.2.0/release/CMakeFiles/backup_server.dir
+/home/liuqingxiu/afstream-0.2.0/release/CMakeFiles/zkmt.dir
+/home/liuqingxiu/afstream-0.2.0/release/CMakeFiles/controller.dir
+/home/liuqingxiu/afstream-0.2.0/release/CMakeFiles/zmq.dir
+/home/liuqingxiu/afstream-0.2.0/release/CMakeFiles/iniparser.dir
+/home/liuqingxiu/afstream-0.2.0/release/CMakeFiles/rebuild_cache.dir
+/home/liuqingxiu/afstream-0.2.0/release/CMakeFiles/zmq_mailbox.dir
+/home/liuqingxiu/afstream-0.2.0/release/CMakeFiles/afstream.dir
