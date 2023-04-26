@@ -13,7 +13,7 @@ Inference via Distributed Stream Processing
 * m4 (1.4.18)
 * gmp (6.2.0)
 * zeromq (4.2.2)
-* boost (1.68)
+* boost (1.73+)
 * [NumCpp](https://github.com/dpilger26/NumCpp.git)
 * [AF-Stream](http://adslab.cse.cuhk.edu.hk/software/afstream/)
 
