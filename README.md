@@ -22,8 +22,8 @@ Inference via Distributed Stream Processing
 Step 1: code preparation
 
 * source code
-	* ```modelprovider/afstream-0.2.0/apps/paillierworker/```
-	* ```dataprovider/afstream-0.2.0/apps/paillierworker/```
+	* ```modelprovider/afstream-0.2.0/apps/paillier_worker/```
+	* ```dataprovider/afstream-0.2.0/apps/paillier_worker/```
 	* ```dataprovider/SP```
 * configuration files
 	* ```modelprovider/afstream-0.2.0/conf/paillier_worker/paillier_worker.ini```
@@ -36,10 +36,10 @@ Step 1: code preparation
 Step 2: build and compile executable files  
 
 ```bash
-cd modelprovider/afstream-0.2.0/apps/paillierworker
+cd modelprovider/afstream-0.2.0/apps/paillier_worker
 make
 
-cd dataprovider/afstream-0.2.0/apps/paillierworker
+cd dataprovider/afstream-0.2.0/apps/paillier_worker
 make
 
 cd dataprovider/SP
@@ -50,7 +50,7 @@ make
 Step 3: execute
 
 ```bash
-# In modelprovider/afstream-0.2.0/apps/paillierworker/:
+# In modelprovider/afstream-0.2.0/apps/paillier_worker/:
 # In terminal 1: 
 ./conv_cm_worker ../../conf/paillier_worker/paillier_worker.ini CONV_CM_Worker1 0
 
@@ -60,7 +60,7 @@ Step 3: execute
 # Interminal 3:
 ./fc3_cm_worker ../../conf/paillier_worker/paillier_worker.ini FC3_CM_Worker1 0
 
-# In dataprovider/afstream-0.2.0/apps/paillierworker/:
+# In dataprovider/afstream-0.2.0/apps/paillier_worker/:
 # In terminal 4:
 ./relu_cm_worker ../../conf/paillier_worker/paillier_worker.ini ReLU_CM_Worker1 0
 
