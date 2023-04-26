@@ -42,7 +42,7 @@ make
 cd dataprovider/afstream-0.2.0/apps/paillierworker
 make
 
-cd SP
+cd dataprovider/SP
 make
 ``` 
 
