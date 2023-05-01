@@ -1,5 +1,5 @@
 service_provider1 : server.o paillier.o openssl_utils.o
-	g++ -o service_provider1 server.o paillier.o openssl_utils.o -lcrypto -lssl -lgmp  -lpthread -L./home/liuqingxiu/demo7.0/afstream/bin -lzmq
+	g++ -o service_provider1 server.o paillier.o openssl_utils.o -lcrypto -lssl -lgmp  -lpthread -L./../../bin -lzmq
 paillier.o : paillier.cpp paillier.h
 	g++ -c paillier.cpp
 server.o : server.cpp paillier.h openssl_utils.h

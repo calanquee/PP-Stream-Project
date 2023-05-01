@@ -25,8 +25,6 @@ all: conv_cm_worker fc2_cm_worker fc3_cm_worker
 conv_cm_worker: conv_cm_worker.cpp paillier.cpp
 	$(CC) conv_cm_worker.cpp paillier.cpp $(CFLAGS) $(HEADER) $(LIBB) -o conv_cm_worker
 
-#fc_cm_worker: fc_cm_worker.cpp paillier.cpp
-#	$(CC) fc_cm_worker.cpp paillier.cpp $(CFLAGS) $(HEADER) $(LIBB) -o fc_cm_worker
 
 fc2_cm_worker: fc2_cm_worker.cpp paillier.cpp
 	$(CC) fc2_cm_worker.cpp paillier.cpp $(CFLAGS) $(HEADER) $(LIBB) -o fc2_cm_worker

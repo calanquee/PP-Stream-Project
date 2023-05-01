@@ -60,14 +60,17 @@ private:
             printf("cant open priv key file");
             exit(0);
         }
-        char *paillier_pubkey_array = (char *)malloc(sizeof(char)*KEY_LEN);
-        char *paillier_privkey_array = (char *)malloc(sizeof(char)*KEY_LEN);
+        char *paillier_pubkey_array = (char *)malloc(sizeof(char)*KEY_LEN*4);
+        char *paillier_privkey_array = (char *)malloc(sizeof(char)*KEY_LEN*4);
         /* read key file */
-        fread(paillier_pubkey_array,1,KEY_LEN,fpubkey);
-        fread(paillier_privkey_array,1,KEY_LEN,fprivkey);
+        fread(paillier_pubkey_array,1,KEY_LEN*4,fpubkey);
+        fread(paillier_privkey_array,1,KEY_LEN*4,fprivkey);
         /* import paillier keys */
         paillier_pubkey = paillier_pubkey_from_hex(paillier_pubkey_array);
         paillier_privkey = paillier_prvkey_from_hex(paillier_privkey_array, paillier_pubkey);
+        // test n
+        // mpz_t test_n = *paillier_pubkey->n;
+        // printf("n=%llu\n", test_n);
         /* free file pointer */
         fclose(fpubkey);
         fclose(fprivkey);
@@ -79,7 +82,7 @@ private:
         paillier_pubkey_array = NULL;
         paillier_privkey_array = NULL;
     }
-    
+
     paillier_ciphertext_t* paillier_encryption(long long int plaintext){
         paillier_ciphertext_t *paillier_ciphertext = (paillier_ciphertext_t *)malloc(sizeof(paillier_ciphertext_t));
         mpz_init(paillier_ciphertext->c);
@@ -98,13 +101,13 @@ private:
         tmpcipher = paillier_ciphertext_from_str(cipherarray,c_length);
         paillier_dec(&output, paillier_pubkey, paillier_privkey, tmpcipher);
 	    long long int res = 999; //just for judging output
-        if(mpz_get_si(output.m)<pow(10,18) && mpz_get_si(output.m)>(-1)*pow(10,18)){
+        if(mpz_get_si(output.m)<pow(10,11) && mpz_get_si(output.m)>(-1)*pow(10,11)){
             res = mpz_get_si(output.m);
             return res;
         }
         else{
             mpz_sub(output.m,output.m,paillier_pubkey->n);
-            if(mpz_get_si(output.m)<pow(10,18) && mpz_get_si(output.m)>(-1)*pow(10,18)){
+            if(mpz_get_si(output.m)<pow(10,11) && mpz_get_si(output.m)>(-1)*pow(10,11)){
                 res = mpz_get_si(output.m);
                 return res;
             }
@@ -116,13 +119,13 @@ private:
         mpz_init(output.m);
         paillier_dec(&output, paillier_pubkey, paillier_privkey, tmpcipher);
         long long int res = 999; //just for judging output
-        if(mpz_get_si(output.m)<pow(10,18) && mpz_get_si(output.m)>(-1)*pow(10,18)){
+        if(mpz_get_si(output.m)<pow(10,11) && mpz_get_si(output.m)>(-1)*pow(10,11)){
             res = mpz_get_si(output.m);
             return res;
         }
         else{
             mpz_sub(output.m,output.m,paillier_pubkey->n);
-            if(mpz_get_si(output.m)<pow(10,18) && mpz_get_si(output.m)>(-1)*pow(10,18)){
+            if(mpz_get_si(output.m)<pow(10,11) && mpz_get_si(output.m)>(-1)*pow(10,11)){
                 res = mpz_get_si(output.m);
                 return res;
             }
@@ -151,13 +154,6 @@ private:
         // printf("inference_result = %d\n", max_index);
         gettimeofday(&Endtime, NULL);
         printf("%lld %lld\n", Endtime.tv_sec, Endtime.tv_usec);
-        /*
-        for(int i=0;i<time_index;++i){
-            diff = diff + 1000000 * (endtime[i].tv_sec-starttime[i].tv_sec)+ (long long)endtime[i].tv_usec-(long long)starttime[i].tv_usec;
-            // LOG_MSG("Latency: %lld\n",diff);
-        }
-        printf("merge_time: %lld\n", diff);
-        */
     }
 
 
@@ -165,13 +161,11 @@ private:
 
     void ProcessData(uint32_t worker, uint32_t thread, uint64_t seq, struct VectorItem &item) {
         int cellindex = item.cell_index;
-        // gettimeofday(&starttime[time_index],NULL);
         int process_cipher_length = item.cipher_length;
         bzero(process_array_cipher, KEY_LEN);
         for(int i=0;i<process_cipher_length;++i){
             process_array_cipher[i] = item.cipher_array[i];
         }
-        // gettimeofday(&starttime[time_index],NULL);
         value = paillier_decryption(process_array_cipher, process_cipher_length);
         printf("%d process value = %lld\n", cellindex, value);
         if(max_result<value){

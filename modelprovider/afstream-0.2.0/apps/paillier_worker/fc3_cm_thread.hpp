@@ -49,7 +49,7 @@ private:
 
     // for ob
     int true_permutation_index[100];
-    int random_seed = 2;
+    int random_seed = 1;
 
     
     char relu_result[845*516];
@@ -88,11 +88,11 @@ private:
             printf("cant open priv key file");
             exit(0);
         }
-        char *paillier_pubkey_array = (char *)malloc(sizeof(char)*KEY_LEN);
-        char *paillier_privkey_array = (char *)malloc(sizeof(char)*KEY_LEN);
+        char *paillier_pubkey_array = (char *)malloc(sizeof(char)*KEY_LEN*4);
+        char *paillier_privkey_array = (char *)malloc(sizeof(char)*KEY_LEN*4);
         /* read key file */
-        fread(paillier_pubkey_array,1,KEY_LEN,fpubkey);
-        fread(paillier_privkey_array,1,KEY_LEN,fprivkey);
+        fread(paillier_pubkey_array,1,KEY_LEN*4,fpubkey);
+        fread(paillier_privkey_array,1,KEY_LEN*4,fprivkey);
         /* import paillier keys */
         paillier_pubkey = paillier_pubkey_from_hex(paillier_pubkey_array);
         paillier_privkey = paillier_prvkey_from_hex(paillier_privkey_array, paillier_pubkey);
@@ -138,25 +138,27 @@ private:
         return paillier_ciphertext;
     }
 
-
     long long int paillier_decryption(char *cipherarray,int c_length){
-	    paillier_ciphertext_t *tmpcipher;
+        paillier_ciphertext_t *tmpcipher;
         paillier_plaintext_t output;
         mpz_init(output.m);
         tmpcipher = paillier_ciphertext_from_str(cipherarray,c_length);
+        // printf("c_length = %d\n", c_length);
         paillier_dec(&output, paillier_pubkey, paillier_privkey, tmpcipher);
-	    long long int res = 999; //just for judging output
-        if(mpz_get_si(output.m)<pow(10,18) && mpz_get_si(output.m)>(-1)*pow(10,18)){
+        long long int res = 999; //just for judging output
+        // printf("%lld\n", mpz_get_si(output.m));
+        if(mpz_get_si(output.m)<pow(10,11) && mpz_get_si(output.m)>=0){
             res = mpz_get_si(output.m);
             return res;
         }
         else{
-            mpz_sub(output.m,output.m,paillier_pubkey->n);
-            if(mpz_get_si(output.m)<pow(10,18) && mpz_get_si(output.m)>(-1)*pow(10,18)){
-                res = mpz_get_si(output.m);
-                return res;
+            // mpz_sub(output.m,output.m,paillier_pubkey->n);
+            while(mpz_get_si(output.m)>0){
+                mpz_sub(output.m,output.m,paillier_pubkey->n);
             }
-        }
+            res = mpz_get_si(output.m);
+            return res;
+            }
     }
 
     long long int pailliertext_decryption(paillier_ciphertext_t *tmpcipher){
@@ -164,13 +166,13 @@ private:
         mpz_init(output.m);
         paillier_dec(&output, paillier_pubkey, paillier_privkey, tmpcipher);
         long long int res = 999; //just for judging output
-        if(mpz_get_si(output.m)<pow(10,18) && mpz_get_si(output.m)>(-1)*pow(10,18)){
+        if(mpz_get_si(output.m)<pow(10,11) && mpz_get_si(output.m)>(-1)*pow(10,11)){
             res = mpz_get_si(output.m);
             return res;
         }
         else{
             mpz_sub(output.m,output.m,paillier_pubkey->n);
-            if(mpz_get_si(output.m)<pow(10,18) && mpz_get_si(output.m)>(-1)*pow(10,18)){
+            if(mpz_get_si(output.m)<pow(10,11) && mpz_get_si(output.m)>(-1)*pow(10,11)){
                 res = mpz_get_si(output.m);
                 return res;
             }
@@ -218,6 +220,21 @@ private:
         }
         free(arr);
         arr = NULL;
+    }
+
+    void generatePermutation(int seed, int N, int* result){
+        for(int i=0;i<N;++i){
+            result[i] = (i+seed)%N;
+        }
+    }
+
+    void inversePermutation(int seed, int N){
+        for(int i=0;i<N;++i){
+            true_permutation_index[i] = (i-seed)%N;
+            if(true_permutation_index[i]<0){
+                true_permutation_index[i] = true_permutation_index[i] + N;
+            }
+        }
     }
 
     void compute_fc3(int index, paillier_cipher_array* encryption_result){
@@ -319,10 +336,8 @@ private:
         cm_item->AppendCellIndex(i_index);
         EmitData(0, *cm_item);
         // just for test
-        /*
-        value = paillier_decryption(ciphertext, length);
-        printf("%d value = %lld\n", i_index, value);
-        */
+        // value = paillier_decryption(ciphertext, length);
+        // printf("%d value = %lld\n", i_index, value);
         delete cm_item;
     }
 
@@ -330,8 +345,6 @@ private:
     void ComputeThreadFinish(){ // free memory and close connection
         gettimeofday(&Endtime, NULL);
         printf("%lld %lld\n", Endtime.tv_sec, Endtime.tv_usec);
-        // zmq_send(requester, send_buffer, 1, 0);
-        // close_zmq_connect();
         for(int i=0;i<time_index;++i){
             diff = diff + 1000000 * (endtime[i].tv_sec-starttime[i].tv_sec)+ (long long)endtime[i].tv_usec-(long long)starttime[i].tv_usec;
             // LOG_MSG("Latency: %lld\n",diff);
@@ -342,21 +355,23 @@ private:
     void ComputeThreadRecovery() {}
 
     void ProcessData(uint32_t worker, uint32_t thread, uint64_t seq, struct ReLUItem &item) {
-        InvrandpermC(random_seed, 100, true_permutation_index);
+        // InvrandpermC(random_seed, 100, true_permutation_index);
+        inversePermutation(random_seed, 100);
         int cellindex = item.cell_index;
-        // printf("%d %ld\n", cellindex, pthread_self());
         for(int i=0;i<845*516;++i){
             relu_result[i] = item.relu_result_buf[i];
         }
         memcpy(&RELU, relu_result, sizeof(RELU));
         for(int i=0;i<100;++i){
             formal_paillier_ciphertext_from_str(RELU.relu[i].array, RELU.relu[i].c_length, ciphertext_relu[true_permutation_index[i]]);
+            // formal_paillier_ciphertext_from_str(RELU.relu[i].array, RELU.relu[i].c_length, ciphertext_relu[i]);
         }
         bzero(relu_result, 845*516);
         for(int i=0;i<10;++i){
             compute_fc3(cellindex*10+i, res_to_merge);
             TerminateWindow1(res_to_merge->array, res_to_merge->c_length, cellindex*10+i);
         }
+        bzero(true_permutation_index, 100);
     }
 
     void ProcessPunc() {}

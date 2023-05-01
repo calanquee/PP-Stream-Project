@@ -49,8 +49,7 @@ private:
     struct  timeval starttime[128*10];
     struct  timeval endtime[128*10];
     unsigned long long int diff;
-    // FILE* time_sec_fp = NULL;
-    // FILE* time_usec_fp = NULL;
+
 
     void init_paillier_ciphertext(paillier_ciphertext_t* ct){
         mpz_init(ct->c);
@@ -73,14 +72,17 @@ private:
             printf("cant open priv key file");
             exit(0);
         }
-        char *paillier_pubkey_array = (char *)malloc(sizeof(char)*KEY_LEN);
-        char *paillier_privkey_array = (char *)malloc(sizeof(char)*KEY_LEN);
+        char *paillier_pubkey_array = (char *)malloc(sizeof(char)*KEY_LEN*4);
+        char *paillier_privkey_array = (char *)malloc(sizeof(char)*KEY_LEN*4);
         /* read key file */
-        fread(paillier_pubkey_array,1,KEY_LEN,fpubkey);
-        fread(paillier_privkey_array,1,KEY_LEN,fprivkey);
+        fread(paillier_pubkey_array,1,KEY_LEN*4,fpubkey);
+        fread(paillier_privkey_array,1,KEY_LEN*4,fprivkey);
         /* import paillier keys */
         paillier_pubkey = paillier_pubkey_from_hex(paillier_pubkey_array);
         paillier_privkey = paillier_prvkey_from_hex(paillier_privkey_array, paillier_pubkey);
+        // test n
+        // mpz_t test_n = *paillier_pubkey->n;
+        // printf("n=%llu\n", test_n);
         /* free file pointer */
         fclose(fpubkey);
         fclose(fprivkey);
@@ -112,13 +114,13 @@ private:
         tmpcipher = paillier_ciphertext_from_str(cipherarray,c_length);
         paillier_dec(&output, paillier_pubkey, paillier_privkey, tmpcipher);
 	    long long int res = 999; //just for judging output
-        if(mpz_get_si(output.m)<pow(10,18) && mpz_get_si(output.m)>(-1)*pow(10,18)){
+        if(mpz_get_si(output.m)<pow(10,6) && mpz_get_si(output.m)>(-1)*pow(10,6)){
             res = mpz_get_si(output.m);
             return res;
         }
         else{
             mpz_sub(output.m,output.m,paillier_pubkey->n);
-            if(mpz_get_si(output.m)<pow(10,18) && mpz_get_si(output.m)>(-1)*pow(10,18)){
+            if(mpz_get_si(output.m)<pow(10,6) && mpz_get_si(output.m)>(-1)*pow(10,6)){
                 res = mpz_get_si(output.m);
                 return res;
             }
@@ -130,13 +132,13 @@ private:
         mpz_init(output.m);
         paillier_dec(&output, paillier_pubkey, paillier_privkey, tmpcipher);
         long long int res = 999; //just for judging output
-        if(mpz_get_si(output.m)<pow(10,18) && mpz_get_si(output.m)>(-1)*pow(10,18)){
+        if(mpz_get_si(output.m)<pow(10,6) && mpz_get_si(output.m)>(-1)*pow(10,6)){
             res = mpz_get_si(output.m);
             return res;
         }
         else{
             mpz_sub(output.m,output.m,paillier_pubkey->n);
-            if(mpz_get_si(output.m)<pow(10,18) && mpz_get_si(output.m)>(-1)*pow(10,18)){
+            if(mpz_get_si(output.m)<pow(10,6) && mpz_get_si(output.m)>(-1)*pow(10,6)){
                 res = mpz_get_si(output.m);
                 return res;
             }
@@ -212,11 +214,9 @@ private:
     void ProcessData(uint32_t worker, uint32_t thread, uint64_t seq, struct VectorItem &item) {
         // get info from stream
         int cellindex = item.cell_index;
-        // gettimeofday(&starttime[time_index],NULL);
         int process_cipher_length = item.cipher_length;
         bzero(process_array_cipher, KEY_LEN);
         image_for_process_index = item.image_index;
-        // printf("image_for_process_index = %d\n",image_for_process_index);
         for(int i=0;i<process_cipher_length;++i){
             process_array_cipher[i] = item.cipher_array[i];
         }
@@ -229,13 +229,6 @@ private:
         // relu1
         if(relu_index==1 && merge_count==845){
             merge_count = 0;
-            /*
-            // decryption test
-            for(int i=0;i<10;++i){
-                printf("%lld ", paillier_decryption(RELU.relu[i].array, RELU.relu[i].c_length));
-            }
-            printf("\n");
-            */
             memcpy(relu_result, (char *)&RELU, sizeof(RELU));
             TerminateWindow1(relu_result, image_for_process_index);
             for(int i=0;i<845;++i){
@@ -247,13 +240,6 @@ private:
         // relu 2
         else if(relu_index==2 && merge_count==100){
             merge_count = 0;
-            /*
-            // decryption test
-            for(int i=0;i<10;++i){
-                printf("%lld ", paillier_decryption(RELU.relu[i].array, RELU.relu[i].c_length));
-            }
-            printf("\n");
-            */
             memcpy(relu_result, (char *)&RELU, sizeof(RELU));
             TerminateWindow2(relu_result, image_for_process_index);
             for(int i=0;i<100;++i){

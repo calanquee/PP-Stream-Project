@@ -73,7 +73,8 @@ void AdapterNetwork::ReadRecord(void** data, uint32_t *data_len) {
         *data_len = 0;
     }
     else{
-        buf[404545] = 1;
+        // buf[404545] = 1;
+        buf[72241] = 3;
         *data = buf;
         *data_len = nbyte;
         *data_len += nbyte;
