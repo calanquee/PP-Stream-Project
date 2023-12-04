@@ -2,7 +2,7 @@
 
 ### What is this repository for?
 
-* PP-Stream: Toward High-Performance Privacy-Preserving Neural Network
+* [ICDE'24] PP-Stream: Toward High-Performance Privacy-Preserving Neural Network
 Inference via Distributed Stream Processing
 
 
