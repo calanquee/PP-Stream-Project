@@ -81,3 +81,7 @@ In dataprovider/SP (send encrypted tensor to model provider):
 ./service_provider1
 
 ```
+
+### Acknowledgement
+
+* Thank [Boyang Xia](https://github.com/LawrenceXia2008) for his contributions and comments to the early version of this project.
